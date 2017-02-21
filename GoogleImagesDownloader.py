@@ -89,57 +89,74 @@ def _download_all_images(file_name, image_links):
 
     while images_requested < len(image_links):
 
+        image_name = None
+        image_ext = None
+
         try:
             req = requests.get(image_links[images_requested], headers={"User-Agent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"}, timeout=connection_timeout)
 
             if req.raise_for_status():
                 raise TimeoutError
-
-            image_info = re.compile("([\w-]+)(\.(jpe?g|png|gif|bmp))", re.MULTILINE)
-
-            image_file_ext_name = image_info.search(str(image_links[images_requested]))
-
-            image_name = image_file_ext_name[0]
-            image_ext = image_file_ext_name[2]
-
-
-            log.write("\t Image info: " + "\n")
-            log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-
-
-            if len(image_name) > 255:
-                print("Image name was too long, it has been shortened")
-                image_name = image_name[0:254]
-                log.write("\t\t Image name: [WAS SHORTENED]" + str(image_name) + "\n")
             else:
-                log.write("\t\t Image name: " + str(image_name) + "\n")
 
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
-            log.write("\t\t Image downloaded from " + str(image_links[images_requested]) + "\n")
+                image_info = re.compile("([\w-]+)(\.(jpe?g|png|gif|bmp))", re.MULTILINE)
 
-            print("\t Image info: ")
-            print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
-            print("\t\t Image downloaded from " + str(image_links[images_requested]))
+                image_file_ext_name = image_info.search(str(image_links[images_requested]))
 
-            # TODO make distinction between image and filename
+                image_name = image_file_ext_name[0]
+                image_ext = image_file_ext_name[2]
 
-            output_file = open(str(path) + "\\" + str(images_requested + 1) + "_" + str(image_name), 'wb')
-            data = req.content
-            output_file.write(data)
+                log.write("\t Image info: " + "\n")
+                log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
+
+                if len(image_name) > 255:
+                    print("Image name was too long, it has been shortened")
+                    image_name = image_name[0:254]
+                    log.write("\t\t Image name: [WAS SHORTENED]" + str(image_name) + "\n")
+                else:
+                    log.write("\t\t Image name: " + str(image_name) + "\n")
+
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+                log.write("\t\t Image downloaded from " + str(image_links[images_requested]) + "\n")
+
+                print("\t Image info: ")
+                print("\t\t Image number: " + str(images_requested + 1))
+                print("\t\t Image name: " + str(image_name))
+                print("\t\t Image ext: " + str(image_ext))
+                print("\t\t Image downloaded from " + str(image_links[images_requested]))
+
+                # TODO make distinction between image and filename
+
+                output_file = open(str(path) + "\\" + str(images_requested + 1) + "_" + str(image_name), 'wb')
+                data = req.content
+                output_file.write(data)
 
         except TypeError:
             log.write("\t Image info: [TYPE ERROR]" + "\n")
             log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-            log.write("\t\t Image name: " + str(image_name) + "\n")
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            if image_name is not None:
+                log.write("\t\t Image name: " + str(image_name) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting name\n")
+            if image_ext is not None:
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting ext\n")
+
             log.write("\t\t Image requested from " + str(image_links[images_requested]) + "\n")
 
             print("\t Image info: [IO ERROR]")
             print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
+
+            if image_name is not None:
+                print("\t\t Image name: " + str(image_name))
+            else:
+                print("\t\t Image name: Error getting name")
+            if image_ext is not None:
+                print("\t\t Image ext: " + str(image_ext))
+            else:
+                print("\t\t Image ext: Error getting ext")
+
             print("\t\t Image requested from " + str(image_links[images_requested]))
 
             images_requested += 1
@@ -148,14 +165,28 @@ def _download_all_images(file_name, image_links):
         except IOError:
             log.write("\t Image info: [IO ERROR]" + "\n")
             log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-            log.write("\t\t Image name: " + str(image_name) + "\n")
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
+
+            if image_name is not None:
+                log.write("\t\t Image name: " + str(image_name) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting name\n")
+            if image_ext is not None:
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting ext\n")
             log.write("\t\t Image requested from " + str(image_links[images_requested]) + "\n")
 
             print("\t Image info: [IO ERROR]")
             print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
+
+            if image_name is not None:
+                print("\t\t Image name: " + str(image_name))
+            else:
+                print("\t\t Image name: Error getting name")
+            if image_ext is not None:
+                print("\t\t Image ext: " + str(image_ext))
+            else:
+                print("\t\t Image ext: Error getting ext")
             print("\t\t Image requested from " + str(image_links[images_requested]))
 
             images_requested += 1
@@ -164,14 +195,30 @@ def _download_all_images(file_name, image_links):
         except TimeoutError:
             log.write("\t Image info: [TIMEOUT ERROR]" + "\n")
             log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-            log.write("\t\t Image name: " + str(image_name) + "\n")
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
+
+            if image_name is not None:
+                log.write("\t\t Image name: " + str(image_name) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting name\n")
+            if image_ext is not None:
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting ext\n")
+
             log.write("\t\t Image requested from " + str(image_links[images_requested]) + "\n")
 
             print("\t Image info: [TIMEOUT ERROR]")
             print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
+
+            if image_name is not None:
+                print("\t\t Image name: " + str(image_name))
+            else:
+                print("\t\t Image name: Error getting name")
+            if image_ext is not None:
+                print("\t\t Image ext: " + str(image_ext))
+            else:
+                print("\t\t Image ext: Error getting ext")
+
             print("\t\t Image requested from " + str(image_links[images_requested]))
 
             images_requested += 1
@@ -180,15 +227,29 @@ def _download_all_images(file_name, image_links):
         except IndexError:
             log.write("\t Image info: [INDEX ERROR]" + "\n")
             log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-            log.write("\t\t Image name: " + str(image_name) + "\n")
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
+
+            if image_name is not None:
+                log.write("\t\t Image name: " + str(image_name) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting name\n")
+            if image_ext is not None:
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting ext\n")
+
             log.write("\t\t Image requested from " + str(image_links[images_requested]) + "\n")
             images_requested += 1
 
             print("\t Image info: [INDEX ERROR]")
             print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
+            if image_name is not None:
+                print("\t\t Image name: " + str(image_name))
+            else:
+                print("\t\t Image name: Error getting name")
+            if image_ext is not None:
+                print("\t\t Image ext: " + str(image_ext))
+            else:
+                print("\t\t Image ext: Error getting ext")
             print("\t\t Image requested from " + str(image_links[images_requested]))
 
             continue
@@ -196,15 +257,29 @@ def _download_all_images(file_name, image_links):
         except Exception:
             log.write("\t Image info: [GENERIC ERROR]" + "\n")
             log.write("\t\t Image number: " + str(images_requested + 1) + "\n")
-            log.write("\t\t Image name: " + str(image_name) + "\n")
-            log.write("\t\t Image ext: " + str(image_ext) + "\n")
+
+            if image_name is not None:
+                log.write("\t\t Image name: " + str(image_name) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting name\n")
+            if image_ext is not None:
+                log.write("\t\t Image ext: " + str(image_ext) + "\n")
+            else:
+                log.write("\t\t Image name: Error getting ext\n")
+
             log.write("\t\t Image requested from " + str(image_links[images_requested]) + "\n")
             images_requested += 1
 
             print("\t Image info: [INDEX ERROR]")
             print("\t\t Image number: " + str(images_requested + 1))
-            print("\t\t Image name: " + str(image_name))
-            print("\t\t Image ext: " + str(image_ext))
+            if image_name is not None:
+                print("\t\t Image name: " + str(image_name))
+            else:
+                print("\t\t Image name: Error getting name")
+            if image_ext is not None:
+                print("\t\t Image ext: " + str(image_ext))
+            else:
+                print("\t\t Image ext: Error getting ext")
             print("\t\t Image requested from " + str(image_links[images_requested]))
 
             continue
@@ -285,14 +360,15 @@ if __name__ == "__main__":
 
         limit_to_week = "&as_qdr=w"
         safe_search = "&safe=active"
-        url = 'https://www.google.com/search?q=' + search + '&tbm=isch' + safe_search
+        url = 'https://www.google.com/search?q=' + search + '&tbm=isch'
         raw_html = (_download_page_html(url))
 
         image_links = image_links + _get_all_links_from_page(raw_html)
 
         if image_links[0][0:4] == "type":
-            print("Google could not process your query, now exiting program")
-            exit(1)
+            print("Google could not process your query, moving to next query")
+            current_query += 1
+            continue
 
         t1 = time.time()    #stop the timer
         total_time = t1-t0   #Calculating the total time required to crawl, find and download all the links of 60,000 images
@@ -309,4 +385,7 @@ if __name__ == "__main__":
 
         current_query += 1
 
+
+    if len(image_links) == []:
+        print("All queries were skipped because google could not process them")
     print("\nFinished downloading all images")

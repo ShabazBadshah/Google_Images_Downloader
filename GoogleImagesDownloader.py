@@ -294,14 +294,24 @@ if __name__ == "__main__":
     # search_query = input("Enter the image you would like to search\n")
     search_query = []
 
+    if os.path._getfullpathname(str("words.txt")):
 
-    while True:
-        query = input("Enter in the queries you want to download. Press enter to move to the next query and 'go' to start downloading \n")
+        search_file = open(os.path._getfullpathname("words.txt"), 'r')
 
-        if str(query).lower() == "go":
-            break
-        else:
-            search_query.append(str(query))
+        print("Loading queries from file\n")
+
+        for word in search_file:
+            search_query.append(str(word))
+
+        print("Done loading queries from file\n")
+    else:
+        while True:
+            query = input("Enter in the queries you want to download. Press enter to move to the next query and 'go' to start downloading \n")
+
+            if str(query).lower() == "go":
+                break
+            else:
+                search_query.append(str(query))
 
     while True:
         try:

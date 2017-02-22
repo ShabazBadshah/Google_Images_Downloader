@@ -108,8 +108,7 @@ def _download_all_images(file_name, image_links):
 
     # Opens the log for writing image meta information
     try:
-        log = open(str(images_save_location_path) + "\\" + file_name + " - log.txt", 'a')  # Open the text file called database.txt
-    # log.write(all_user_search_queries + ": " + str(query_all_image_links) + "\n\n\n")         #Write the title of the page
+        log = open(str(images_save_location_path) + "\\" + file_name + " - log.txt", 'a')
     except IOError:
         print("there was an error opening the log, now exiting program")
         exit(1)

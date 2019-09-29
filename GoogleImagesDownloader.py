@@ -1,5 +1,7 @@
 #Searching and Downloading Google Images/Image Links
 
+# TODO: Turn into shell script
+
 #Import Libraries
 
 import time       #Importing the time library to check the time of code execution
